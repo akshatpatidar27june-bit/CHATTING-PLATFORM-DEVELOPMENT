@@ -107,8 +107,12 @@ article:hover .delete-message { opacity: 1; }
 .message-actions{display:flex;gap:4px;margin-top:3px}.message-actions button{border:0;background:#f4f2ef;color:#81796f;border-radius:8px;padding:4px 7px;font-size:9px}
 .reel-send-button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:#25221f;color:#fff}.reel-send-button:disabled{opacity:.4}
 
-/* compact single-reaction UI */
-.message-reaction-wrap{position:relative;display:flex;align-items:center;margin-top:3px}
+/* compact multi-user reaction UI */
+.message-reaction-wrap{position:relative;display:flex;align-items:center;gap:4px;margin-top:3px;min-height:24px}
+.message-reaction-list{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.message-reaction-pill{display:inline-flex;align-items:center;gap:2px;border:1px solid #e8e4df;background:#fff;border-radius:12px;height:24px;padding:0 7px;font-size:12px;color:#81796f}
+.message-reaction-pill.mine{background:#f0e7dc;border-color:#cbb79f}
+.message-reaction-pill small{font-size:9px;color:#8d8174}
 .message-reaction-current{border:1px solid #e8e4df;background:#fff;border-radius:12px;min-width:25px;height:24px;padding:0 7px;font-size:12px;color:#81796f;cursor:pointer}
 .message-reaction-current:hover{background:#f7f4ef}
 .message-reaction-picker{position:absolute;bottom:29px;left:0;display:flex;gap:3px;padding:5px;background:#fff;border:1px solid #e5dfd7;border-radius:14px;box-shadow:0 8px 24px #17171720;z-index:8}
