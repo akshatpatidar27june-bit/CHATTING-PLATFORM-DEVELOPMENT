@@ -7,15 +7,13 @@ type Attachment={url:string;name:string;type:string;size:number};
 type Message={id:string;room_id:string;sender:Role;content:string;her_seen:boolean;him_seen:boolean;her_seen_at?:string|null;him_seen_at?:string|null;created_at:string;deleted_at?:string|null;deleted_by?:Role|null;attachment_url?:string|null;attachment_name?:string|null;attachment_type?:string|null;attachment_size?:number|null};
 async function getRoomId():Promise<string|null>{const{data,error}=await supabase.from('rooms').select('id').order('created_at',{ascending:true}).limit(1).maybeSingle();if(error)throw error;return data?.id??null;}
 async function getUnreadCounts(roomId:string){
- const [herRes,himRes,totalRes]=await Promise.all([
+ const [herRes,himRes]=await Promise.all([
    supabase.from('messages').select('id',{count:'exact',head:true}).eq('room_id',roomId).eq('sender','him').eq('her_seen',false).is('deleted_at',null),
-   supabase.from('messages').select('id',{count:'exact',head:true}).eq('room_id',roomId).eq('sender','her').eq('him_seen',false).is('deleted_at',null),
-   supabase.from('messages').select('id',{count:'exact',head:true}).eq('room_id',roomId).is('deleted_at',null)
+   supabase.from('messages').select('id',{count:'exact',head:true}).eq('room_id',roomId).eq('sender','her').eq('him_seen',false).is('deleted_at',null)
  ]);
  if(herRes.error)throw herRes.error;
  if(himRes.error)throw himRes.error;
- if(totalRes.error)throw totalRes.error;
- return {her:herRes.count??0,him:himRes.count??0,total:totalRes.count??0};
+ return {her:herRes.count??0,him:himRes.count??0};
 }
 
 
@@ -51,7 +49,7 @@ function PrivateHome({role,onChat}:{role:Role;onChat:()=>void}) {
  type Reel={id:string;url:string;added_by:Role;created_at:string};
  type ReelReaction={reel_id:string;reactor:Role;reaction:string};
  type SharedDate={id:string;title:string;date_value:string;added_by:Role;created_at:string};
- const [photos,setPhotos]=useState<Message[]>([]),[unread,setUnread]=useState(0),[chatCount,setChatCount]=useState(0),[loading,setLoading]=useState(true),[reels,setReels]=useState<Reel[]>([]),[reactions,setReactions]=useState<ReelReaction[]>([]),[dates,setDates]=useState<SharedDate[]>([]),[reelInput,setReelInput]=useState(''),[showReels,setShowReels]=useState(false),[newReels,setNewReels]=useState(0),[photoUploading,setPhotoUploading]=useState(false),[showAddDate,setShowAddDate]=useState(false),[dateTitle,setDateTitle]=useState(''),[dateValue,setDateValue]=useState(''); 
+ const [photos,setPhotos]=useState<Message[]>([]),[unread,setUnread]=useState(0),[loading,setLoading]=useState(true),[reels,setReels]=useState<Reel[]>([]),[reactions,setReactions]=useState<ReelReaction[]>([]),[dates,setDates]=useState<SharedDate[]>([]),[reelInput,setReelInput]=useState(''),[showReels,setShowReels]=useState(false),[newReels,setNewReels]=useState(0),[photoUploading,setPhotoUploading]=useState(false),[showAddDate,setShowAddDate]=useState(false),[dateTitle,setDateTitle]=useState(''),[dateValue,setDateValue]=useState(''); 
  const photoInputRef=useRef<HTMLInputElement>(null);
  function markReelsSeen(){localStorage.setItem('just-us-reels-seen-'+role,new Date().toISOString());setNewReels(0);}
  async function loadHome(){
@@ -65,7 +63,7 @@ function PrivateHome({role,onChat}:{role:Role;onChat:()=>void}) {
    ]);
    setPhotos(((msgRes.data??[]) as Message[]).filter(m=>m.attachment_type?.startsWith('image/')));
    const nextReels=(reelRes.data??[]) as Reel[];setReels(nextReels);setReactions((reactionRes.data??[]) as ReelReaction[]);setDates((dateRes.data??[]) as SharedDate[]);
-   setUnread(role==='her'?counts.her:counts.him);setChatCount(counts.total);
+   setUnread(role==='her'?counts.her:counts.him);
    const seen=localStorage.getItem('just-us-reels-seen-'+role);
    setNewReels(nextReels.filter(r=>r.added_by!==role&&(!seen||new Date(r.created_at)>new Date(seen))).length);setLoading(false);
  }
