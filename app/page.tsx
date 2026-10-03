@@ -70,7 +70,7 @@ function PrivateHome({role,onChat}:{role:Role;onChat:()=>void}) {
  <button className="chat-fab" onClick={onChat}><span>♡</span><b>Chat</b>{unread>0&&<em>{unread}</em>}</button></main>;
 }
 export default function Home(){const [role,setRole]=useState<Role|null>(null),[pin,setPin]=useState(''),[unlocked,setUnlocked]=useState(false),[selected,setSelected]=useState<Role|null>(null),[error,setError]=useState('');useEffect(()=>{if(localStorage.getItem('just-us-unlocked')==='1')setUnlocked(true);},[]);
- function unlock(){if(pin===('24'+'27')){localStorage.setItem('just-us-unlocked','1');setUnlocked(true);setError('');}else{setError('Wrong PIN');setPin('');}}
+ function unlock(){if(pin==='2011'){localStorage.setItem('just-us-unlocked','1');setUnlocked(true);setError('');}else{setError('Wrong PIN');setPin('');}}
  if(role)return <Chat role={role} onBack={()=>setRole(null)}/>;
  if(unlocked&&!selected)return <main className="name-page"><section className="name-card"><div className="lock-icon">♡</div><div className="eyebrow">WELCOME BACK</div><h1>Who is here?</h1><p>Choose your name to enter.</p><div className="name-choices"><button onClick={()=>setSelected('her')}>Her<small>Her</small></button><button onClick={()=>setSelected('him')}>Him<small>Him</small></button></div></section></main>;
  if(unlocked&&selected)return <PrivateHome role={selected} onChat={()=>setRole(selected)}/>;
